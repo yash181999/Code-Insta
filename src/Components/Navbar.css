@@ -1,0 +1,64 @@
+.nav{
+    background-color: white;
+    z-index: 1000;
+    border-bottom: 0.3px solid gainsboro;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+    overflow: hidden;
+    position: sticky;
+    top: 0;
+    
+  
+  }
+  
+  .nav__content {
+     
+   flex: wrap;
+     
+  }
+  
+  .nav__logo{
+    height: 60%;
+    object-fit: contain;
+  }
+  
+  .nav__navigationContainer {
+      display: flex;
+      align-items: center;
+      justify-content:space-evenly;
+  }
+  
+ 
+
+  .nav__iconButton{
+      border-bottom: 3px solid  #fd5949;
+      border-radius: 2px;
+  }
+
+  
+  @media only screen and (max-width: 600px) {
+    .nav__logo{
+   
+      height: 40%;
+    
+    
+    }
+    .nav__search{
+        display: none;
+    }
+  }
+
+  @media only screen and (max-width: 340px) {
+    .nav__logo{
+   
+      height: 30%;
+    
+    
+    }
+    .nav__search{
+        display: none;
+    }
+  }

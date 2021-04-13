@@ -1,0 +1,125 @@
+.app{
+    margin: 0;
+    padding: 0;
+  }
+  
+  .home {
+    background: #f3f2ee;
+    overflow: hidden;
+   
+    padding-top: 10px;
+    
+  }
+  
+  .home__activity {
+    z-index: 3;
+    width: 45%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  
+   
+    
+  }
+  
+  .home__storyContainer{
+    width: 93%;
+    overflow: scroll;
+    border-radius: 10px;
+    padding: 10px;
+    border: 1px solid gainsboro;
+    background-color: white;
+    display: flex;
+  }
+  
+  .home__story{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+  
+  
+  .home__postActivity {
+    margin-top: 20px;
+    width: 93%;
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    border: 1px solid gainsboro;
+  }
+  
+  .home__postContainer {
+    display: flex;
+    margin-bottom: 10px;
+    align-items: center;
+  }
+  
+  .home__post {
+    outline: none;
+    width: 93%;
+    height: 30px;
+    position: relative;
+    margin-left: 5px;
+    border: 0.5px solid black;
+    border-radius: 15px;
+    display: flex;
+    padding: 2px;
+    align-items: center;
+  }
+  
+  .home__postMedia{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+  
+  .activity__container{
+    margin-top: 20px;
+    width: 93%;
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    border: 1px solid gainsboro;
+  }
+  
+  .activity__head{
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid gainsboro;
+  }
+  
+  .activity__head>p{
+    margin-left: 10px;
+    position: relative;
+  }
+  
+  .activity__containt{
+    margin-top: 10px;
+    
+  }
+  
+  .activity__containt > img{
+    width: 93%;
+   
+  }
+  
+  @media only screen and (max-width: 600px) {
+    .home__activity{
+      width: 100%;
+      margin-left: 0;
+      margin-right: 0;
+    
+    }
+  }
+  
+  
+  @media only screen and (max-width: 340px) {
+    .home__activity{
+      width: 100%;
+      margin-left: 0;
+      margin-right: 0;
+    
+    }
+  }
