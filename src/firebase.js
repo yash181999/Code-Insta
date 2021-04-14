@@ -20,17 +20,5 @@ const firebaseConfig = {
 
   var storageRef = firebase.storage().ref();
 
-  export const uploadImageToStorage = async (userId, files) => {
-      try{
-        for (let i = 0; i < files.length; i++) {
-         await storageRef.child(userId).child(Date.now()).put(files[i]);
-        }
-      }
-      catch(e){
-        console.log(e);
-      }
-  }
-
-  
   
   export {db, auth,storageRef};
