@@ -60,8 +60,7 @@ function Login() {
         if (auth) {
           const uId = auth.uId;
           const uName = email.split("@")[0];
-
-          history.push("/home");
+          history.replace("/home");
         }
       })
       .catch((error) => alert(error.message));

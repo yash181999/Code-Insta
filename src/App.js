@@ -6,6 +6,7 @@ import { auth } from "./firebase";
 import { useStateValue } from "./StateProvider";
 import Home from "./Views/Home";
 import Login from "./Views/Login";
+import Profile from "./Views/Profile";
 import Signup from "./Views/SignUp";
 
 function App() {
@@ -35,16 +36,21 @@ function App() {
     <Router>
       <div className="app">
         <Switch>
-          <Route path="/home">
+          <Route exact path="/home">
             <Navbar />
             <Home />
           </Route>
 
-          <Route path="/signup">
+          <Route exact path="/signup">
             <Signup />
           </Route>
 
-          <Route path="/">
+          <Route exact path="/profile">
+            <Navbar />
+            <Profile/>
+          </Route>
+
+          <Route exact path="/">
             <Login />
           </Route>
         </Switch>

@@ -6,6 +6,7 @@ import {
   makeStyles,
   MobileStepper,
   Modal,
+  TextareaAutosize,
   useTheme,
 } from "@material-ui/core";
 import {
@@ -30,37 +31,8 @@ import { useStateValue } from "../StateProvider";
 import firebase from "firebase";
 import ProgressBar from "../Components/ProgressBar";
 import Posts from "../Components/Posts";
-
-// const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
-
-//dumy images
-const tutorialSteps = [
-  {
-    label: "San Francisco – Oakland Bay Bridge, United States",
-    imgPath:
-      "https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60",
-  },
-  {
-    label: "Bird",
-    imgPath:
-      "https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60",
-  },
-  {
-    label: "Bali, Indonesia",
-    imgPath:
-      "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250&q=80",
-  },
-  {
-    label: "NeONBRAND Digital Marketing, Las Vegas, United States",
-    imgPath:
-      "https://images.unsplash.com/photo-1518732714860-b62714ce0c59?auto=format&fit=crop&w=400&h=250&q=60",
-  },
-  {
-    label: "Goč, Serbia",
-    imgPath:
-      "https://images.unsplash.com/photo-1512341689857-198e7e2f3ca8?auto=format&fit=crop&w=400&h=250&q=60",
-  },
-]; //dumy imgages
+import VideoPosts from "../Components/VideoPosts";
+import TextPosts from "../Components/TextPosts";
 
 //style for material compoent
 const useStyles = makeStyles((theme) => ({
@@ -126,6 +98,7 @@ function Home() {
 
   const [image, setImage] = useState([]);
   const [videoToUpload, setVideoToUpload] = useState();
+  const [textPost, setTextPost] = useState("");
   const maxSteps = image.length;
 
   const [{ user }] = useStateValue();
@@ -218,33 +191,28 @@ function Home() {
       const currentDate = Date.now();
       const imageUrls = [];
       for (let i = 0; i < image.length; i++) {
-
         //reference to storage/// path....
         let uploadTask = storageRef
           .child(user.uid)
           .child("images")
           .child(Date.now().toString());
 
-
-       //push to file storage
+        //push to file storage
         await uploadTask.put(image[i]).then((snapshot) => {
-  
           uploadTask.getDownloadURL().then((url) => {
             imageUrls[i] = url;
           });
         });
-
-
       }
 
       imageUrls.length > 0 &&
-        (db.collection("Posts").doc().set({
+        db.collection("Posts").doc().set({
           date: currentDate,
           type: "image",
           urls: imageUrls,
           userId: user.uid,
           userName: userDetails.name,
-        }));
+        });
     }
 
     setLoading(false);
@@ -252,10 +220,8 @@ function Home() {
   };
 
   const uploadVideo = async (e) => {
-    // e.preventDefault();
     setLoading(true);
 
-    //  user && await  storageRef.child('hello').put(image[0]);
     if (user) {
       const currentDate = Date.now();
 
@@ -285,11 +251,29 @@ function Home() {
     if (loading) {
       setOpenModal(true);
     } else {
-     
       // setImage([]);
       setOpenModal(false);
-      
     }
+  };
+
+  const openTextPost = () => {
+    setModalType("TEXT");
+    setOpenModal(true);
+  };
+
+  const uploadTextPost = async() => {
+      setLoading(true);
+      await db.collection("Posts").doc().set({
+         date: Date.now(),
+         type: "text",
+         content : textPost,
+         userId: user.uid,
+         userName: userDetails.name,
+       });
+       setLoading(false);
+       setTextPost('');
+       setOpenModal(false);
+
   };
 
   return (
@@ -315,10 +299,11 @@ function Home() {
                     padding: "10px",
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "flex-end",
+                    justifyContent: "space-between",
                   }}
                 >
-                  <IconButton onClick = {closeModal} >
+                  Create a post
+                  <IconButton onClick={closeModal}>
                     <Close></Close>
                   </IconButton>
                 </div>
@@ -404,37 +389,21 @@ function Home() {
               <div>
                 {modalType === "VIDEO" && (
                   <div>
-                    {
-                      videoToUpload && (
-                        <video
-                          style={{
-                            display: "block",
-                            marginLeft: "auto",
-                            marginRight: "auto",
-                          }}
-                          controls
-                          style={{ width: "100%", height: "100%" }}
-                        >
-                          <source
-                            src={URL.createObjectURL(videoToUpload)}
-                          ></source>
-                        </video>
-                      )
-
-                      // videoToUpload && (
-                      //   <ReactPlayer
-                      //     style={{
-                      //       display: "block",
-                      //       marginLeft: "auto",
-                      //       marginRight: "auto",
-                      //       width: "100%",
-                      //       height: "100%",
-                      //     }}
-                      //     playing
-                      //     url={[{ src: URL.createObjectURL(videoToUpload) }]}
-                      //   ></ReactPlayer>
-                      // )
-                    }
+                    {videoToUpload && (
+                      <video
+                        style={{
+                          display: "block",
+                          marginLeft: "auto",
+                          marginRight: "auto",
+                        }}
+                        controls
+                        style={{ width: "100%", height: "100%" }}
+                      >
+                        <source
+                          src={URL.createObjectURL(videoToUpload)}
+                        ></source>
+                      </video>
+                    )}
 
                     {videoToUpload && (
                       <div>
@@ -457,6 +426,25 @@ function Home() {
               </div>
             )}
 
+            {/* write text post */}
+
+            {!loading && modalType === "TEXT" && (
+              <div>
+                <textarea
+                  onChange={(e) => setTextPost(e.target.value)}
+                  placeholder="What do you want to talk about"
+                  className="post__textarea"
+                />
+                <Button
+                  onClick={uploadTextPost }
+                  disabled={textPost === "" ? true : false}
+                  style={{ backgroundColor: "green", color: "white" }}
+                >
+                  POST
+                </Button>
+              </div>
+            )}
+
             {loading && <ProgressBar></ProgressBar>}
           </div>
         </Fade>
@@ -475,7 +463,7 @@ function Home() {
         <div className="home__postActivity">
           <div className="home__postContainer">
             <Avatar></Avatar>
-            <div className="home__post"></div>
+            <div onClick={openTextPost} className="home__post"></div>
           </div>
 
           <div className="home__postMedia">
@@ -508,7 +496,21 @@ function Home() {
         </div>
 
         {postSnapShot.map((post) => {
-          return <Posts data={post} userDetails={userDetails}></Posts>;
+          if (post.data().type === "image") {
+            return <Posts data={post} userDetails={userDetails}></Posts>;
+          } else if (post.data().type === "video") {
+            return (
+              <VideoPosts
+                videoData={post}
+                userDetails={userDetails}
+              ></VideoPosts>
+            );
+          }
+          else if(post.data().type ==='text') {
+            return (
+              <TextPosts textData = {post} useDetails = {userDetails} ></TextPosts>
+            )
+          }
         })}
       </div>
     </div>

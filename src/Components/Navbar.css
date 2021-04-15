@@ -30,6 +30,16 @@
       align-items: center;
       justify-content:space-evenly;
   }
+
+  .nav__search >input{
+     background-color: #fffbfb;
+     border-radius: 5px ;
+     width : 200px;
+     height: 25px;
+     font-size: 14px;
+     outline: none;
+     border :   1px solid gray;
+  }
   
  
 
