@@ -1,0 +1,14 @@
+.search_screenNav {
+  height: 64px;
+  display: flex;
+  border: 1px solid black;
+  align-items: center;
+  border-radius: 3px ;
+}
+.search_screenNav > input {
+  height: 59px;
+  width: 100%;
+  font-size: 18px;
+  border: none;
+  outline: none;
+}

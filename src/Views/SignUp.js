@@ -13,6 +13,8 @@ import Container from "@material-ui/core/Container";
 import { useHistory } from "react-router";
 import { auth, db } from "../firebase";
 import { Link } from "react-router-dom";
+import ProgressBar from "../Components/ProgressBar";
+
 
 function Copyright() {
   return (
@@ -56,16 +58,19 @@ function Signup() {
   const history = useHistory();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading , setLoading] = useState(false);
 
   const register = async (e) => {
+   
     e.preventDefault();
+     setLoading(true);
     //do some fancy firebase registerx
 
     await auth
       .createUserWithEmailAndPassword(email, password)
       .then((auth) => {
         if (auth) {
-          history.push("/home");
+          history.replace("/home");
         }
       })
       .catch((error) => alert(error.message));
@@ -84,6 +89,7 @@ function Signup() {
         .then()
         .catch((e) => console.log(e));
     }
+    setLoading(false);
   };
 
   return (
@@ -131,7 +137,7 @@ function Signup() {
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
           />
-          <Button
+          {!loading ?  <Button
             type="submit"
             fullWidth
             variant="contained"
@@ -140,10 +146,12 @@ function Signup() {
             onClick={register}
           >
             Sign Up
-          </Button>
+          </Button> : <ProgressBar></ProgressBar>}
+          
+
           <Grid container>
             <Grid item>
-              <Link to="/login">{"Already have an account? Sign In"}</Link>
+              <Link to="/">{"Already have an account? Sign In"}</Link>
             </Grid>
           </Grid>
         </form>

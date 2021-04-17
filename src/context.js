@@ -10,7 +10,9 @@ const AppProvider = ({children}) => {
 
     
 
-    const [{user}, dispatch] = useStateValue();
+    const [searchedUserId, setSearchedUserId] = useState();
+    const [currentUserData, setCurrentUserData] = useState();
+    const [selected, setSelected] = useState('HOME');
 
     
     
@@ -22,7 +24,12 @@ const AppProvider = ({children}) => {
     return <AppContext.Provider value = {
         {
             
-            
+            searchedUserId,
+            setSearchedUserId,
+            currentUserData,
+            setCurrentUserData,
+            selected,
+            setSelected,
             
         }
     } >{children}</AppContext.Provider>

@@ -1,15 +1,21 @@
-import React, { useEffect } from "react";
+import { Explore } from "@material-ui/icons";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import "./App.css";
 import Navbar from "./Components/Navbar";
-import { auth } from "./firebase";
+import SearchScreen from "./Components/SearchScreen";
+import { useGlobalContext } from "./context";
+import { auth, db } from "./firebase";
 import { useStateValue } from "./StateProvider";
+import ExplorePage from "./Views/ExplorePage";
 import Home from "./Views/Home";
 import Login from "./Views/Login";
+import Profile from "./Views/Profile";
 import Signup from "./Views/SignUp";
 
 function App() {
   const [{ user }, dispatch] = useStateValue();
+
 
   useEffect(() => {
     auth.onAuthStateChanged((authUser) => {
@@ -31,20 +37,45 @@ function App() {
     });
   }, [auth]);
 
+
+
+ 
+
+
+  const {searchedUserId, setSearchedUserId} = useGlobalContext();
+
+  useEffect(()=> {
+    setSearchedUserId(localStorage.getItem('searchedUserId'));
+  },[])
+ 
+
   return (
     <Router>
       <div className="app">
         <Switch>
-          <Route path="/home">
+          <Route exact path="/home">
             <Navbar />
             <Home />
           </Route>
 
-          <Route path="/signup">
+          <Route exact path="/signup">
             <Signup />
           </Route>
+          <Route exact path="/explore">
+            <Navbar></Navbar>
+            <ExplorePage />
+          </Route>
 
-          <Route path="/">
+          <Route exact path="/search">
+            <SearchScreen />
+          </Route>
+
+          <Route path={`/profile/${searchedUserId}`}>
+            <Navbar />
+            <Profile />
+          </Route>
+
+          <Route exact path="/">
             <Login />
           </Route>
         </Switch>

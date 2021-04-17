@@ -1,0 +1,44 @@
+.profile { 
+    width: 55%;
+    margin-top: 20px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.profile__head{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.followers__container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.follower__btn { 
+    margin-left: 20px!important;
+}
+
+.list-tile {
+    width: 100%;
+    background-color: white;
+    margin-top: 10px;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+
+}
+
+.list-tile:hover{
+    border-radius: 3px;
+    background-color: gainsboro;
+    cursor:grab;
+}
+
+.list-tile > p {
+    position: relative;
+    margin-left: 10px;
+}

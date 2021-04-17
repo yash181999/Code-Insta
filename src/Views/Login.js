@@ -16,6 +16,7 @@ import { logDOM } from "@testing-library/dom";
 import { useHistory } from "react-router";
 import { auth } from "../firebase";
 import { Link } from "react-router-dom";
+import ProgressBar from "../Components/ProgressBar";
 
 function Copyright() {
   return <div></div>;
@@ -50,8 +51,10 @@ function Login() {
   const history = useHistory();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading , setLoading] = useState(false);
 
   const signIn = async (e) => {
+    setLoading(true);
     e.preventDefault();
     //do some firebase login
     await auth
@@ -60,11 +63,11 @@ function Login() {
         if (auth) {
           const uId = auth.uId;
           const uName = email.split("@")[0];
-
-          history.push("/home");
+          history.replace("/home");
         }
       })
       .catch((error) => alert(error.message));
+      setLoading(false);
   };
 
   return (
@@ -112,7 +115,7 @@ function Login() {
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
           />
-          <Button
+         { !loading ? <Button
             type="submit"
             fullWidth
             variant="contained"
@@ -121,7 +124,7 @@ function Login() {
             onClick={signIn}
           >
             Sign In
-          </Button>
+          </Button> : <ProgressBar></ProgressBar>}
           <Grid container>
             <Grid item xs>
               Forgot password?

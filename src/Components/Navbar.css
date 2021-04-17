@@ -30,6 +30,16 @@
       align-items: center;
       justify-content:space-evenly;
   }
+
+  .nav__search >input{
+     background-color: #fffbfb;
+     border-radius: 5px ;
+     width : 200px;
+     height: 25px;
+     font-size: 14px;
+     outline: none;
+     border :   1px solid gray;
+  }
   
  
 
@@ -37,6 +47,10 @@
       border-bottom: 3px solid  #fd5949;
       border-radius: 2px;
   }
+
+   .nav__searchIcon{
+       display: none; 
+    }
 
   
   @media only screen and (max-width: 600px) {
@@ -49,6 +63,9 @@
     .nav__search{
         display: none;
     }
+     .nav__searchIcon{
+       display: block; 
+    }
   }
 
   @media only screen and (max-width: 340px) {
@@ -60,5 +77,8 @@
     }
     .nav__search{
         display: none;
+    }
+    .nav__searchIcon{
+       visibility: block; 
     }
   }

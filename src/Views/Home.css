@@ -87,6 +87,7 @@
   .activity__head{
     display: flex;
     align-items: center;
+    padding: 5px ;
     border-bottom: 1px solid gainsboro;
   }
   
@@ -122,4 +123,19 @@
       margin-right: 0;
     
     }
+  }
+
+  .post__textarea{
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    height:200px;
+  }
+
+  .modal__head{
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
