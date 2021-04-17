@@ -132,3 +132,10 @@
     font-size: 16px;
     height:200px;
   }
+
+  .modal__head{
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }

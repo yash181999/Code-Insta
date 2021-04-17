@@ -69,7 +69,7 @@ function VideoPosts({ videoData, userDetails }) {
   return (
     <div className="activity__container">
       <div className="activity__head">
-        <Avatar></Avatar>
+        <Avatar src={videoData.data()?.profileImage}></Avatar>
         <p>{videoData.data().userName}</p>
       </div>
       <div className="activity_containt">

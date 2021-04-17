@@ -115,6 +115,10 @@ function Home() {
 
   const [postSnapShot, setPostSnapShot] = useState([]);
 
+
+
+
+
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
@@ -212,6 +216,7 @@ function Home() {
           urls: imageUrls,
           userId: user.uid,
           userName: userDetails.name,
+          profileImage : userDetails.profileImage && userDetails.profileImage,
         });
     }
 
@@ -231,13 +236,17 @@ function Home() {
         .child(Date.now().toString());
       await uploadTask.put(videoToUpload).then((snapshot) => {
         uploadTask.getDownloadURL().then((url) => {
-          db.collection("Posts").doc().set({
-            date: currentDate,
-            type: "video",
-            url: url,
-            userId: user.uid,
-            userName: userDetails.name,
-          });
+          db.collection("Posts")
+            .doc()
+            .set({
+              date: currentDate,
+              type: "video",
+              url: url,
+              userId: user.uid,
+              userName: userDetails.name,
+              profileImage:
+                userDetails.profileImage && userDetails.profileImage,
+            });
         });
       });
     }
@@ -263,13 +272,17 @@ function Home() {
 
   const uploadTextPost = async() => {
       setLoading(true);
-      await db.collection("Posts").doc().set({
-         date: Date.now(),
-         type: "text",
-         content : textPost,
-         userId: user.uid,
-         userName: userDetails.name,
-       });
+      await db
+        .collection("Posts")
+        .doc()
+        .set({
+          date: Date.now(),
+          type: "text",
+          content: textPost,
+          userId: user.uid,
+          userName: userDetails.name,
+          profileImage: userDetails.profileImage && userDetails.profileImage,
+        });
        setLoading(false);
        setTextPost('');
        setOpenModal(false);
@@ -295,12 +308,7 @@ function Home() {
             {!loading && (
               <div>
                 <div
-                  style={{
-                    padding: "10px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
+                  className = 'modal__head'
                 >
                   Create a post
                   <IconButton onClick={closeModal}>
@@ -451,19 +459,19 @@ function Home() {
       </Modal>
 
       <div className="home__activity">
-        <div className="home__storyContainer">
+        {/* <div className="home__storyContainer">
           <div className="home__story">
             <div>
               <Avatar></Avatar>
             </div>
             <div style={{ fontSize: "8px" }}>Yash</div>
           </div>
-        </div>
+        </div> */}
 
         <div className="home__postActivity">
           <div className="home__postContainer">
-            <Avatar></Avatar>
-            <div onClick={openTextPost} className="home__post"></div>
+            <Avatar src = {userDetails?.profileImage}></Avatar>
+            <div onClick={openTextPost} className="home__post">Write something</div>
           </div>
 
           <div className="home__postMedia">
@@ -508,7 +516,7 @@ function Home() {
           }
           else if(post.data().type ==='text') {
             return (
-              <TextPosts textData = {post} useDetails = {userDetails} ></TextPosts>
+              <TextPosts textData = {post} userDetails = {userDetails} ></TextPosts>
             )
           }
         })}

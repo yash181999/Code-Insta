@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Avatar, IconButton, makeStyles, Popover } from "@material-ui/core";
-import { useHistory } from "react-router";
+import { useHistory, useLocation } from "react-router";
 
 import {
   ChatBubble,
@@ -12,6 +12,8 @@ import {
 } from "@material-ui/icons";
 import "./Navbar.css";
 import { db } from "../firebase";
+import { useGlobalContext } from "../context";
+import { useStateValue } from "../StateProvider";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,13 +39,41 @@ function Navbar() {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [userSnapshot, setUserSnapshot] = useState([]);
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState("");
   const history = useHistory();
+  const {selected, setSelected} = useGlobalContext();
+  const [{ user }] = useStateValue();
+
+  const { searchedUserId, setSearchedUserId } = useGlobalContext();
+  
+
+  const [userDetails, setUserDetails] = useState();
+        const location = useLocation();
+
+
+  const getUserDetails = () => {
+    user  && db.collection('Users').doc(user.uid).onSnapshot((querySnashot) => {
+      setUserDetails(querySnashot.data());
+    })
+  }
+
+  const getCurrentLocation = () => {
+    if(location.pathname === '/home') {
+      setSelected('HOME');
+    }
+    else if(location.pathname === '/explore') {
+      setSelected('EXPLORE');
+    }
+    else{
+      setSelected('PROFILE');
+    }
+  }
+
+  
+
 
 
   const handleClick = (event) => {
-    console.log('ehlo')
-    
     setAnchorEl(event.currentTarget);
   };
 
@@ -53,28 +83,65 @@ function Navbar() {
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
- const handleOnChange = (e) => {
-   e.preventDefault();
-   setSearchText(e.target.value);
-   getUsers();
- }
-
-  const getUsers = () => {
-    db.collection("Users").orderBy('name').startAt(searchText).onSnapshot((querySnashot) => {
-      setUserSnapshot(querySnashot.docs);
-    });
+  const handleOnChange = (e) => {
+    setSearchText(e.target.value);
+    getUsers();
   };
 
-  const goToProfile = (searchedUserId) => {
-    localStorage.setItem('searchedUserId', searchedUserId)
-    history.push('/profile');
+  const getUsers = (e) => {
+    db.collection("Users")
+      .orderBy("name")
+      .startAt(searchText)
+      .onSnapshot((querySnashot) => {
+        setUserSnapshot(querySnashot.docs);
+      });
+  };
+
+  const goToProfile = (value) => {
+    // setSearchedUserId(value.id);
+    // console.log(searchedUserId);
+    localStorage.setItem("searchedUserId", value.id);
+    setSearchedUserId(value.id);
+    value && history.push(`/profile/${value.id}`);
+    setAnchorEl(null);
+    setSearchText("");
+  };
+
+  const goToMyProfile = () => {
+    if (user) {
+      setSelected("PROFILE");
+      localStorage.setItem("searchedUserId", user.uid);
+      setSearchedUserId(user.uid);
+      user && history.push(`/profile/${user.uid}`);
+    }
+  };
+
+  const goToHome = () => {
+    setSelected('HOME');
+    history.push('/home');
   }
+
+  const goToExplore = () => {
+    setSelected('EXPLORE');
+    history.push('/explore')
+  }
+ 
+  useEffect(() => {
+      getUserDetails();
+      getCurrentLocation();
+  },[user]);
+
+
+  // useEffect(() => {
+  //   // localStorage.setItem("searchedUserId", searchedUserId);
+  // },[searchedUserId])
 
   return (
     <nav className="nav">
       {/* logo */}
 
       <img
+        onClick={() => history.push("/home")}
         className="nav__logo"
         alt="logo"
         src="https://www.instagram.com/static/images/web/mobile_nav_type_logo-2x.png/1b47f9d0e595.png"
@@ -82,7 +149,7 @@ function Navbar() {
 
       <div className="nav__search">
         <input
-          value = {searchText}
+          value={searchText}
           onChange={handleOnChange}
           onClick={handleClick}
           placeholder="SEARCH"
@@ -107,26 +174,21 @@ function Navbar() {
             style={{
               padding: "10px",
               width: "300px",
-              display: "flex",
-              flexDirection : 'column',
-              alignItems : 'flex-start'
             }}
           >
             {userSnapshot.length > 0 &&
               userSnapshot.map((value) => {
-                 return (
-                
+                return (
                   <div
-                    onClick = {() => goToProfile(value.data().uid)}
+                    onClick={() => goToProfile(value)}
                     style={{
                       padding: "10px",
                       width: "300px",
                       display: "flex",
-                      flexDirection : 'column',
                       alignItems: "center",
                     }}
                   >
-                    <Avatar className={classes.small}></Avatar>
+                    <Avatar src = {value.data()?.profileImage} className={classes.small}></Avatar>
                     <div style={{ marginLeft: "10px", position: "relative" }}>
                       {value.data().name}
                     </div>
@@ -138,27 +200,34 @@ function Navbar() {
       </div>
 
       <div className="nav__navigationContainer">
-        <div className="nav__iconButton">
+        <div
+          onClick={goToHome}
+          className={selected === "HOME" && "nav__iconButton"}
+        >
           <IconButton>
             <Home style={{ color: "black" }}></Home>
           </IconButton>
         </div>
 
-        <IconButton>
-          <ChatBubble style={{ color: "black" }}></ChatBubble>
-        </IconButton>
+        <div
+          onClick={goToExplore}
+          className={selected === "EXPLORE" && "nav__iconButton"}
+        >
+          <IconButton>
+            <ExploreRounded style={{ color: "black" }} />
+          </IconButton>
+        </div>
 
-        <IconButton>
-          <ExploreRounded style={{ color: "black" }} />
-        </IconButton>
+      
 
-        <IconButton>
-          <FavoriteRounded style={{ color: "black" }} />
-        </IconButton>
-
-        <IconButton>
-          <Avatar style={{ color: "black" }} className={classes.small} />
-        </IconButton>
+        <div
+          onClick={goToMyProfile}
+          className={selected === "PROFILE" && "nav__iconButton"}
+        >
+          <IconButton>
+            <Avatar src = {userDetails?.profileImage} style={{ color: "black" }} className={classes.small} />
+          </IconButton>
+        </div>
       </div>
     </nav>
   );

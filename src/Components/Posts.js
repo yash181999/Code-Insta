@@ -119,7 +119,7 @@ function Posts({ data, userDetails }) {
   return (
     <div className="activity__container">
       <div className="activity__head">
-        <Avatar></Avatar>
+        <Avatar src = {data.data()?.profileImage}></Avatar>
         <p>{data.data().userName}</p>
       </div>
       <div className="activity_containt">

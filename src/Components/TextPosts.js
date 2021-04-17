@@ -69,13 +69,12 @@ function TextPosts({textData, userDetails}) {
     }, []);
 
     return (
-        <div className="activity__container">
-      <div className="activity__head">
-        <Avatar></Avatar>
-        <p>{textData.data().userName}</p>
-      </div>
-      <div className="activity_containt">
-
+      <div className="activity__container">
+        <div className="activity__head">
+          <Avatar src={textData.data()?.profileImage}></Avatar>
+          <p>{textData.data().userName}</p>
+        </div>
+        <div className="activity_containt">
           <p>{textData.data().content}</p>
 
           <IconButton onClick={likePost}>
@@ -112,14 +111,10 @@ function TextPosts({textData, userDetails}) {
             >
               POST
             </Button>
-            </div>
-
-
-
-
+          </div>
+        </div>
       </div>
-    </div>
-  );
+    );
     
 }
 
