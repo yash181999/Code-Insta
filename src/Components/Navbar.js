@@ -103,6 +103,7 @@ function Navbar() {
     value && history.push(`/profile/${value.id}`);
     setAnchorEl(null);
     setSearchText("");
+    setUserSnapshot([]);
   };
 
   const goToMyProfile = () => {

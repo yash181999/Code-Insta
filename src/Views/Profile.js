@@ -11,7 +11,7 @@ import {
 } from "@material-ui/core";
 import React, { useEffect, useRef, useState } from "react";
 import { useGlobalContext } from "../context";
-import { db, storageRef } from "../firebase";
+import { auth, db, storageRef } from "../firebase";
 import { useStateValue } from "../StateProvider";
 import "./Profile.css";
 import Modal from "@material-ui/core/Modal";
@@ -289,6 +289,10 @@ function Profile() {
     setModalOpen(false);
   };
 
+  const signOut = () => {
+    history.replace('/');
+  }
+
   return (
     <div className="profile">
       <Modal
@@ -319,7 +323,7 @@ function Profile() {
               followers.map((value) => {
                 return (
                   <div onClick={() => goToProfile(value)} className="list-tile">
-                    <Avatar src = {value.data()?.profileImage}></Avatar>
+                    <Avatar src={value.data()?.profileImage}></Avatar>
                     <p>{value.data().name}</p>
                   </div>
                 );
@@ -344,7 +348,7 @@ function Profile() {
 
       <div className="profile__head">
         <Avatar
-          src = {searchedUserData && searchedUserData?.profileImage}
+          src={searchedUserData && searchedUserData?.profileImage}
           onClick={changeProfilePhoto}
           className={isMobile ? classes.small : classes.large}
         ></Avatar>
@@ -375,6 +379,15 @@ function Profile() {
             {followBtn ? "Follow" : "Unfollow"}
           </Button>
         )}
+
+        {user && searchedUserId === user.uid && (
+          <Button
+            onClick={signOut}
+            style={{ backgroundColor: "#42ddf5", color: "white" }}
+          >
+            Sign Out
+          </Button>
+        )}
       </div>
 
       <div className="followers__container">
@@ -382,7 +395,6 @@ function Profile() {
           {`${followers.length} Followers`}
         </Button>
         <Button onClick={openFollowing} className="follower__btn">
-          
           {`${following.length} Following`}
         </Button>
       </div>

@@ -29,9 +29,15 @@ function SearchScreen() {
       });
   };
 
+
   const goToProfile = (value) => {
+    // setSearchedUserId(value.id);
+    // console.log(searchedUserId);
+    localStorage.setItem("searchedUserId", value.id);
     setSearchedUserId(value.id);
-    history.push(`/profile/${value.id}`);
+    value && history.push(`/profile/${value.id}`);
+    setSearchText("");
+    setUserSnapshot('');
   };
 
   return (
@@ -40,7 +46,7 @@ function SearchScreen() {
         <IconButton onClick = {() => history.goBack()}>
           <ArrowBack />
         </IconButton>
-        <input onChange={handleOnChange} value={searchText}></input>
+        <input placeholder = 'Search Users' onChange={handleOnChange} value={searchText}></input>
       </nav>
       <div style={{ padding: "20px" }}>
         {userSnapshot.map((value) => {
