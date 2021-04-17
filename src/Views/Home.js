@@ -161,7 +161,7 @@ function Home() {
   }; //getting images from device
 
   const getAllPosts = () => {
-    db.collection("Posts").onSnapshot((querySnapshot) => {
+    db.collection("Posts").orderBy('date','desc').onSnapshot((querySnapshot) => {
       setPostSnapShot(querySnapshot.docs);
     });
   };

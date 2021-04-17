@@ -19,7 +19,6 @@ import { Link } from "react-router-dom";
 import ProgressBar from "../Components/ProgressBar";
 import logo from "../logo.png";
 
-
 function Copyright() {
   return <div></div>;
 }
@@ -30,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    justifyContent : 'center'
+    justifyContent: "center",
   },
   avatar: {
     margin: theme.spacing(1),
@@ -54,7 +53,7 @@ function Login() {
   const history = useHistory();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading , setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const signIn = async (e) => {
     setLoading(true);
@@ -70,7 +69,24 @@ function Login() {
         }
       })
       .catch((error) => alert(error.message));
-      setLoading(false);
+    setLoading(false);
+  };
+
+  const demoSignIn = async (e) => {
+    setLoading(true);
+    e.preventDefault();
+    //do some firebase login
+    await auth
+      .signInWithEmailAndPassword("demouser@codeinsta.com", "1234567")
+      .then((auth) => {
+        if (auth) {
+          const uId = auth.uId;
+          const uName = email.split("@")[0];
+          history.replace("/home");
+        }
+      })
+      .catch((error) => alert(error.message));
+    setLoading(false);
   };
 
   return (
@@ -78,7 +94,7 @@ function Login() {
       <CssBaseline />
       <div className={classes.paper}>
         <div className={classes.imgContainer}>
-          <img style ={{width : '50%'}} src={logo} alt =  {'logo'}></img>
+          <img style={{ height: "50px" }} src={logo} alt={"logo"}></img>
         </div>
 
         <Avatar className={classes.avatar}></Avatar>
@@ -114,20 +130,25 @@ function Login() {
               setPassword(val.target.value);
             }}
           />
-          <FormControlLabel
+          {/* <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
-          />
-         { !loading ? <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-            onClick={signIn}
-          >
-            Sign In
-          </Button> : <ProgressBar></ProgressBar>}
+          /> */}
+          {!loading ? (
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+              onClick={signIn}
+            >
+              Sign In
+            </Button>
+          ) : (
+            <ProgressBar></ProgressBar>
+          )}
+
           <Grid container>
             <Grid item xs>
               Forgot password?
@@ -136,6 +157,19 @@ function Login() {
               <Link to="/signup">{"Don't have an account? Sign Up"}</Link>
             </Grid>
           </Grid>
+
+          {!loading && (
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              style={{ color: "white", backgroundColor: "green" }}
+              className={classes.submit}
+              onClick={demoSignIn}
+            >
+              Demo Login
+            </Button>
+          )}
         </form>
       </div>
       <Box mt={8}>
