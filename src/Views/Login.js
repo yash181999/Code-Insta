@@ -77,7 +77,7 @@ function Login() {
       <CssBaseline />
       <div className={classes.paper}>
         <div className={classes.imgContainer}>
-          <img src={logo} alt =  {'logo'}></img>
+          <img style ={{width : '50%'}} src={logo} alt =  {'logo'}></img>
         </div>
 
         <Avatar className={classes.avatar}></Avatar>

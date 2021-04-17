@@ -98,7 +98,7 @@ function Signup() {
       <CssBaseline />
       <div className={classes.paper}>
         <div className={classes.imgContainer}>
-          <img src={logo} alt = {'logo'}></img>
+          <img style={{ width: "50%" }} src={logo} alt={"logo"}></img>
         </div>
 
         <Avatar className={classes.avatar}></Avatar>
@@ -138,17 +138,20 @@ function Signup() {
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
           />
-          {!loading ?  <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-            onClick={register}
-          >
-            Sign Up
-          </Button> : <ProgressBar></ProgressBar>}
-          
+          {!loading ? (
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+              onClick={register}
+            >
+              Sign Up
+            </Button>
+          ) : (
+            <ProgressBar></ProgressBar>
+          )}
 
           <Grid container>
             <Grid item>
