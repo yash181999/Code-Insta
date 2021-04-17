@@ -17,6 +17,8 @@ import { useHistory } from "react-router";
 import { auth } from "../firebase";
 import { Link } from "react-router-dom";
 import ProgressBar from "../Components/ProgressBar";
+import logo from "../logo.png";
+
 
 function Copyright() {
   return <div></div>;
@@ -75,7 +77,7 @@ function Login() {
       <CssBaseline />
       <div className={classes.paper}>
         <div className={classes.imgContainer}>
-          <img src="https://www.instagram.com/static/images/web/mobile_nav_type_logo-2x.png/1b47f9d0e595.png"></img>
+          <img src={logo} alt =  {'logo'}></img>
         </div>
 
         <Avatar className={classes.avatar}></Avatar>
