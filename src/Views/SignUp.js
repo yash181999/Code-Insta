@@ -36,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    justifyContent : 'center'
   },
   avatar: {
     margin: theme.spacing(1),
@@ -50,6 +51,7 @@ const useStyles = makeStyles((theme) => ({
   },
   imgContainer: {
     marginTop: 10,
+
   },
 }));
 
