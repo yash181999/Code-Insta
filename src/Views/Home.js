@@ -115,10 +115,6 @@ function Home() {
 
   const [postSnapShot, setPostSnapShot] = useState([]);
 
-
-
-
-
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
@@ -155,11 +151,13 @@ function Home() {
   const getImage = (event) => {
     let imageArray = [];
     if (event.target.files) {
-      for (let i = 0; i < event.target.files.length; i++) {
-        imageArray[i] = event.target.files[i];
-      }
+      // for (let i = 0; i < event.target.files.length; i++) {
+      //   imageArray[i] = event.target.files[i];
+      // }
+      imageArray = [...event.target.files];
+      setImage(imageArray);
     }
-    setImage(imageArray);
+    
   }; //getting images from device
 
   const getAllPosts = () => {
@@ -190,10 +188,8 @@ function Home() {
   //uploading images to firbase storage
   const uploadImages = async (e) => {
     setLoading(true);
-
+    let imageUrls = [];
     if (user) {
-      const currentDate = Date.now();
-      const imageUrls = [];
       for (let i = 0; i < image.length; i++) {
         //reference to storage/// path....
         let uploadTask = storageRef
@@ -205,24 +201,46 @@ function Home() {
         await uploadTask.put(image[i]).then((snapshot) => {
           uploadTask.getDownloadURL().then((url) => {
             imageUrls[i] = url;
+
+            if(i === image.length-1) {
+
+               db.collection("Posts")
+                 .doc()
+                 .set({
+                   date: Date.now(),
+                   type: "image",
+                   urls: imageUrls,
+                   userId: user.uid,
+                   userName: userDetails.name,
+                   profileImage:
+                     userDetails.profileImage && userDetails.profileImage,
+                 });
+              
+            }
+            
           });
         });
       }
 
-      imageUrls.length > 0 &&
-        db.collection("Posts").doc().set({
-          date: currentDate,
-          type: "image",
-          urls: imageUrls,
-          userId: user.uid,
-          userName: userDetails.name,
-          profileImage : userDetails.profileImage && userDetails.profileImage,
-        });
+      // imageUrls.length > 0 &&
+      //   (await db
+      //     .collection("Posts")
+      //     .doc()
+      //     .set({
+      //       date: Date.now(),
+      //       type: "image",
+      //       urls: imageUrls,
+      //       userId: user.uid,
+      //       userName: userDetails.name,
+      //       profileImage: userDetails.profileImage && userDetails.profileImage,
+      //     }));
     }
 
     setLoading(false);
     setOpenModal(false);
   };
+
+  const setImagesToFirebase = async (imageUrls) => {};
 
   const uploadVideo = async (e) => {
     setLoading(true);
@@ -270,23 +288,22 @@ function Home() {
     setOpenModal(true);
   };
 
-  const uploadTextPost = async() => {
-      setLoading(true);
-      await db
-        .collection("Posts")
-        .doc()
-        .set({
-          date: Date.now(),
-          type: "text",
-          content: textPost,
-          userId: user.uid,
-          userName: userDetails.name,
-          profileImage: userDetails.profileImage && userDetails.profileImage,
-        });
-       setLoading(false);
-       setTextPost('');
-       setOpenModal(false);
-
+  const uploadTextPost = async () => {
+    setLoading(true);
+    await db
+      .collection("Posts")
+      .doc()
+      .set({
+        date: Date.now(),
+        type: "text",
+        content: textPost,
+        userId: user.uid,
+        userName: userDetails.name,
+        profileImage: userDetails.profileImage && userDetails.profileImage,
+      });
+    setLoading(false);
+    setTextPost("");
+    setOpenModal(false);
   };
 
   return (
@@ -307,9 +324,7 @@ function Home() {
           <div className={classes.paper}>
             {!loading && (
               <div>
-                <div
-                  className = 'modal__head'
-                >
+                <div className="modal__head">
                   Create a post
                   <IconButton onClick={closeModal}>
                     <Close></Close>
@@ -444,7 +459,7 @@ function Home() {
                   className="post__textarea"
                 />
                 <Button
-                  onClick={uploadTextPost }
+                  onClick={uploadTextPost}
                   disabled={textPost === "" ? true : false}
                   style={{ backgroundColor: "green", color: "white" }}
                 >
@@ -470,8 +485,10 @@ function Home() {
 
         <div className="home__postActivity">
           <div className="home__postContainer">
-            <Avatar src = {userDetails?.profileImage}></Avatar>
-            <div onClick={openTextPost} className="home__post">Write something</div>
+            <Avatar src={userDetails?.profileImage}></Avatar>
+            <div onClick={openTextPost} className="home__post">
+              Write something
+            </div>
           </div>
 
           <div className="home__postMedia">
@@ -513,11 +530,10 @@ function Home() {
                 userDetails={userDetails}
               ></VideoPosts>
             );
-          }
-          else if(post.data().type ==='text') {
+          } else if (post.data().type === "text") {
             return (
-              <TextPosts textData = {post} userDetails = {userDetails} ></TextPosts>
-            )
+              <TextPosts textData={post} userDetails={userDetails}></TextPosts>
+            );
           }
         })}
       </div>

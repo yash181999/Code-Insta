@@ -175,8 +175,7 @@ function Profile() {
         .set({
           uid: user.uid,
           name: currentUserDetails.name,
-          profileImage:
-            currentUserDetails.profileImage && currentUserDetails.profileImage,
+          profileImage: `${currentUserDetails.profileImage !== null ? currentUserDetails.profileImage : null}`
         }));
 
     // console.log(currentUserData && currentUserData);
@@ -191,7 +190,7 @@ function Profile() {
         .set({
           uid: searchedUserId,
           name: searchedUserData.name,
-          profileImage: searchedUserData.profileImage && searchedUserData.profileImage,
+          profileImage: `${searchedUserData.profileImage !== null ? searchedUserData.profileImage : null}`,
         }));
 
     setFollowBtn(false);

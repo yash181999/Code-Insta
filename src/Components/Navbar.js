@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Avatar, IconButton, makeStyles, Popover } from "@material-ui/core";
 import { useHistory, useLocation } from "react-router";
+import logo from "../logo.png";
 
 import {
   ChatBubble,
   ExploreRounded,
   FavoriteRounded,
   Home,
+  Search,
   Send,
   SignalWifi1BarLockSharp,
 } from "@material-ui/icons";
@@ -41,37 +43,33 @@ function Navbar() {
   const [userSnapshot, setUserSnapshot] = useState([]);
   const [searchText, setSearchText] = useState("");
   const history = useHistory();
-  const {selected, setSelected} = useGlobalContext();
+  const { selected, setSelected } = useGlobalContext();
   const [{ user }] = useStateValue();
 
   const { searchedUserId, setSearchedUserId } = useGlobalContext();
-  
 
   const [userDetails, setUserDetails] = useState();
-        const location = useLocation();
-
+  const location = useLocation();
 
   const getUserDetails = () => {
-    user  && db.collection('Users').doc(user.uid).onSnapshot((querySnashot) => {
-      setUserDetails(querySnashot.data());
-    })
-  }
+    user &&
+      db
+        .collection("Users")
+        .doc(user.uid)
+        .onSnapshot((querySnashot) => {
+          setUserDetails(querySnashot.data());
+        });
+  };
 
   const getCurrentLocation = () => {
-    if(location.pathname === '/home') {
-      setSelected('HOME');
+    if (location.pathname === "/home") {
+      setSelected("HOME");
+    } else if (location.pathname === "/explore") {
+      setSelected("EXPLORE");
+    } else {
+      setSelected("PROFILE");
     }
-    else if(location.pathname === '/explore') {
-      setSelected('EXPLORE');
-    }
-    else{
-      setSelected('PROFILE');
-    }
-  }
-
-  
-
-
+  };
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -117,20 +115,19 @@ function Navbar() {
   };
 
   const goToHome = () => {
-    setSelected('HOME');
-    history.push('/home');
-  }
+    setSelected("HOME");
+    history.push("/home");
+  };
 
   const goToExplore = () => {
-    setSelected('EXPLORE');
-    history.push('/explore')
-  }
- 
-  useEffect(() => {
-      getUserDetails();
-      getCurrentLocation();
-  },[user]);
+    setSelected("EXPLORE");
+    history.push("/explore");
+  };
 
+  useEffect(() => {
+    getUserDetails();
+    getCurrentLocation();
+  }, [user]);
 
   // useEffect(() => {
   //   // localStorage.setItem("searchedUserId", searchedUserId);
@@ -144,7 +141,7 @@ function Navbar() {
         onClick={() => history.push("/home")}
         className="nav__logo"
         alt="logo"
-        src="https://www.instagram.com/static/images/web/mobile_nav_type_logo-2x.png/1b47f9d0e595.png"
+        src={logo}
       />
 
       <div className="nav__search">
@@ -188,7 +185,10 @@ function Navbar() {
                       alignItems: "center",
                     }}
                   >
-                    <Avatar src = {value.data()?.profileImage} className={classes.small}></Avatar>
+                    <Avatar
+                      src={value.data()?.profileImage}
+                      className={classes.small}
+                    ></Avatar>
                     <div style={{ marginLeft: "10px", position: "relative" }}>
                       {value.data().name}
                     </div>
@@ -199,7 +199,17 @@ function Navbar() {
         </Popover>
       </div>
 
-      <div className="nav__navigationContainer">
+      <div className="nav__navigationContainer ">
+        <div onClick = {() => history.push('/search')} className = 'nav__searchIcon'>
+          <IconButton>
+            <Search
+              src={userDetails?.profileImage}
+              style={{ color: "black" }}
+              className={classes.small}
+            />
+          </IconButton>
+        </div>
+
         <div
           onClick={goToHome}
           className={selected === "HOME" && "nav__iconButton"}
@@ -218,14 +228,16 @@ function Navbar() {
           </IconButton>
         </div>
 
-      
-
         <div
           onClick={goToMyProfile}
           className={selected === "PROFILE" && "nav__iconButton"}
         >
           <IconButton>
-            <Avatar src = {userDetails?.profileImage} style={{ color: "black" }} className={classes.small} />
+            <Avatar
+              src={userDetails?.profileImage}
+              style={{ color: "black" }}
+              className={classes.small}
+            />
           </IconButton>
         </div>
       </div>

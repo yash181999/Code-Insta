@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import "./App.css";
 import Navbar from "./Components/Navbar";
+import SearchScreen from "./Components/SearchScreen";
 import { useGlobalContext } from "./context";
 import { auth, db } from "./firebase";
 import { useStateValue } from "./StateProvider";
@@ -52,7 +53,7 @@ function App() {
     <Router>
       <div className="app">
         <Switch>
-          <Route  exact path="/home">
+          <Route exact path="/home">
             <Navbar />
             <Home />
           </Route>
@@ -63,6 +64,10 @@ function App() {
           <Route exact path="/explore">
             <Navbar></Navbar>
             <ExplorePage />
+          </Route>
+
+          <Route exact path="/search">
+            <SearchScreen />
           </Route>
 
           <Route path={`/profile/${searchedUserId}`}>
