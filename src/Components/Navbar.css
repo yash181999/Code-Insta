@@ -21,6 +21,7 @@
   }
   
   .nav__logo{
+    cursor: pointer;
     height: 60%;
     object-fit: contain;
   }

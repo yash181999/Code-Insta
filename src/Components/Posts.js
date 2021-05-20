@@ -13,8 +13,9 @@ import { Favorite, FavoriteBorder } from "@material-ui/icons";
 import { db } from "../firebase";
 import { useStateValue } from "../StateProvider";
 import "./Posts.css";
-
-
+import Modal from "@material-ui/core/Modal";
+import Backdrop from "@material-ui/core/Backdrop";
+import Fade from "@material-ui/core/Fade";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -31,9 +32,27 @@ const useStyles = makeStyles((theme) => ({
   img: {
     height: "100%",
     display: "flex",
-    maxWidth: "100%",
-    overflow: "hidden",
+    cursor: "pointer",
     width: "100%",
+    overflow: "hidden",
+    maxHeight: "500px",
+    objectFit: "cover",
+  },
+  modal: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  paper: {
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: theme.shadows[10],
+    outline: "none",
+    border: "none",
+    height: "50%",
+    width: "50%",
+    borderRadius: "10px",
+
+    padding: "10px",
   },
 }));
 
@@ -45,6 +64,18 @@ function Posts({ data, userDetails }) {
   const [{ user }] = useStateValue();
   const [inputComment, setInputComment] = useState("");
   const [commentSnapshot, setCommentSnapshot] = useState([]);
+
+  const [open, setOpen] = React.useState(false);
+  const [clickedImageUrl, setClickedImageUrl] = useState("");
+
+  const handleOpen = (imageUrl) => {
+    setOpen(true);
+    setClickedImageUrl(imageUrl);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -62,12 +93,30 @@ function Posts({ data, userDetails }) {
 
   const likePost = () => {
     user &&
-      db.collection("Posts").doc(data.id).collection("Likes").doc().set({
-        likedBy: user.uid,
-        date: Date.now(),
-        userName: userDetails.name,
-      });
+      db
+        .collection("Posts")
+        .doc(data.id)
+        .collection("Likes")
+        .doc(user.uid)
+        .set({
+          likedBy: user.uid,
+          date: Date.now(),
+          userName: userDetails.name,
+        });
     setLiked(true);
+  };
+
+  const disLikePost = () => {
+    if (liked === true) {
+      user &&
+        db
+          .collection("Posts")
+          .doc(data.id)
+          .collection("Likes")
+          .doc(user.uid)
+          .delete();
+      setLiked(false);
+    }
   };
 
   const getLiked = () => {
@@ -118,13 +167,35 @@ function Posts({ data, userDetails }) {
 
   return (
     <div className="activity__container">
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        className={classes.modal}
+        open={open}
+        onClose={handleClose}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={open}>
+          <div className={classes.paper}>
+            <img
+              style={{ width: "100%", height: "100%", objectFit: "contain" }}
+              src={clickedImageUrl}
+              controls
+            ></img>
+          </div>
+        </Fade>
+      </Modal>
       <div className="activity__head">
-        <Avatar src = {data.data()?.profileImage}></Avatar>
+        <Avatar src={data.data()?.profileImage}></Avatar>
         <p>{data.data().userName}</p>
       </div>
       <div className="activity_containt">
         <div className={classes.root}>
-           <div>
+          <div>
             <SwipeableViews
               axis={theme.direction === "rtl" ? "x-reverse" : "x"}
               index={activeStep}
@@ -138,6 +209,7 @@ function Posts({ data, userDetails }) {
                     <div key={step.label}>
                       {Math.abs(activeStep - index) <= 2 ? (
                         <img
+                          onClick={() => handleOpen(step)}
                           className={classes.img}
                           src={step}
                           alt={step.label}
@@ -180,8 +252,7 @@ function Posts({ data, userDetails }) {
             />
           </div>
 
-
-          <IconButton onClick={likePost}>
+          <IconButton onClick={() => (liked ? disLikePost() : likePost())}>
             {!liked && <FavoriteBorder />}
             {liked && <Favorite color="error" />}
           </IconButton>
@@ -190,7 +261,7 @@ function Posts({ data, userDetails }) {
             commentSnapshot.map((value) => {
               return (
                 value.data() && (
-                  <div className="comments">
+                  <div key={value.id} className="comments">
                     <p className="commentedBy">{value.data().userName}</p>
                     <p className="comment">{value.data().comment}</p>
                   </div>

@@ -1,6 +1,6 @@
 import { Explore } from "@material-ui/icons";
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, useLocation, useHistory } from "react-router-dom";
 import "./App.css";
 import Navbar from "./Components/Navbar";
 import SearchScreen from "./Components/SearchScreen";
@@ -15,6 +15,7 @@ import Signup from "./Views/SignUp";
 
 function App() {
   const [{ user }, dispatch] = useStateValue();
+
 
 
   useEffect(() => {
@@ -38,7 +39,7 @@ function App() {
   }, [auth]);
 
 
-
+  
  
 
 

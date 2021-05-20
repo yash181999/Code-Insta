@@ -12,10 +12,11 @@ function SearchScreen() {
   const [{ user }] = useStateValue();
   const [searchText, setSearchText] = useState("");
   const [userSnapshot, setUserSnapshot] = useState([]);
-  const location = useLocation();
+  
   const history = useHistory();
 
   const handleOnChange = (e) => {
+    
     setSearchText(e.target.value);
     getUsers();
   };

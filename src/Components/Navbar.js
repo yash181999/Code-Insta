@@ -130,6 +130,18 @@ function Navbar() {
     getCurrentLocation();
   }, [user]);
 
+
+  useEffect(() => {
+    if(location.pathname ==='/home'){
+      setSelected('HOME');
+    }else if(location.pathname === '/profile') {
+      setSelected('PROFILE');
+    }
+    else if(location.pathname === '/explore') {
+      setSelected('EXPLORE');
+    }
+  },[location])
+
   // useEffect(() => {
   //   // localStorage.setItem("searchedUserId", searchedUserId);
   // },[searchedUserId])
@@ -178,6 +190,7 @@ function Navbar() {
               userSnapshot.map((value) => {
                 return (
                   <div
+                    key = {value.id}
                     onClick={() => goToProfile(value)}
                     style={{
                       padding: "10px",

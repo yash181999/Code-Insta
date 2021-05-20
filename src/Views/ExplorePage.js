@@ -37,6 +37,7 @@ function ExplorePage() {
 
   return (
     <div className={classes.root}>
+      
       <GridList cellHeight={160} className={classes.gridList} cols={3}>
         {postSnapShot.length > 0 &&
           postSnapShot.map((value) => {
@@ -46,7 +47,7 @@ function ExplorePage() {
                 return (
                
                     <GridListTile cols={1} key={value.id}>
-                      <img src={image}></img>
+                      <img style = {{objectFit : 'cover', width: '100%', height : '100%'}} src={image}></img>
                     </GridListTile>
                  
                 );
